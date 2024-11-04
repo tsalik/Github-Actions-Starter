@@ -1,4 +1,4 @@
-name: GitHub Actions Demo
+name: GitHub Actions Demo Upload
 
 on:
   pull_request:
@@ -23,3 +23,10 @@ jobs:
 
       - name: Build with Gradle
         run: ./gradlew assembleRelease testRelease
+
+      - name: Decode keystore
+        env:
+          ANDROID_KEYSTORE: ${{ secrets.ANDROID_KEYSTORE }}
+        run: |
+          echo "$ANDROID_KEYSTORE" | base64 --decode > release-key.keystore
+

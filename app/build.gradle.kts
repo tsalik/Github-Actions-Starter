@@ -1,6 +1,3 @@
-import com.android.sdklib.computeFullReleaseName
-import com.android.sdklib.computeReleaseNameAndDetails
-
 plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
@@ -38,7 +35,7 @@ android {
     }
 
     signingConfigs {
-        getByName("release") {
+        create("release") {
             storeFile = file(System.getenv("RELEASE_KEYSTORE_PATH"))
             storePassword = System.getenv("SIGNING_STORE_PASSWORD")
             keyAlias = System.getenv("SIGNING_KEY_ALIAS")

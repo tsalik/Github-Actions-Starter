@@ -21,12 +21,18 @@ jobs:
       - name: Set up Gradle
         uses: gradle/actions/setup-gradle@v4.1.0
 
-      - name: Build with Gradle
-        run: ./gradlew assembleRelease testRelease
-
       - name: Decode keystore
         env:
           ANDROID_KEYSTORE: ${{ secrets.ANDROID_KEYSTORE }}
+          RELEASE_KEYSTORE_PATH: ${{ secrets.RELEASE_KEYSTORE_PATH }}
         run: |
-          echo "$ANDROID_KEYSTORE" | base64 --decode > release-key.keystore
+          echo "$ANDROID_KEYSTORE" | base64 --decode > $RELEASE_KEYSTORE_PATH
+
+      - name: Build with Gradle
+        env:
+          SIGNING_KEY_STORE_PATH: ${{ secrets.ANDROID_KEYSTORE }}
+          SIGNING_KEY_ALIAS: ${{ secrets.SIGNING_KEY_ALIAS }}
+          SIGNING_KEY_PASSWORD: ${{ secrets.KEY_ALIAS }}
+          SIGNING_STORE_PASSWORD: ${{ secrets.KEY_PASSWORD }}
+        run: ./gradlew assembleRelease testRelease
 

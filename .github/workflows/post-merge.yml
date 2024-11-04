@@ -24,9 +24,8 @@ jobs:
       - name: Decode keystore
         env:
           ANDROID_KEYSTORE: ${{ secrets.ANDROID_KEYSTORE }}
-          RELEASE_KEYSTORE_PATH: ${{ secrets.RELEASE_KEYSTORE_PATH }}
         run: |
-          echo "$ANDROID_KEYSTORE" | base64 --decode > $RELEASE_KEYSTORE_PATH
+          echo "$ANDROID_KEYSTORE" | base64 --decode > keystore
 
       - name: Build with Gradle
         env:

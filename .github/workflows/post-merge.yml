@@ -1,0 +1,40 @@
+name: GitHub Actions Demo Upload
+
+on:
+  pull_request:
+    branches: [ trunk ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4.2.2
+
+      - name: Set up JDK
+        uses: actions/setup-java@v4.5.0
+        with:
+          distribution: 'adopt'
+          java-version: 17
+
+      - name: Set up Gradle
+        uses: gradle/actions/setup-gradle@v4.1.0
+
+      - name: Decode keystore
+        env:
+          ANDROID_KEYSTORE: ${{ secrets.ANDROID_KEYSTORE }}
+        run: |
+          echo "$ANDROID_KEYSTORE" | base64 --decode > keystore
+
+      - name: Build with Gradle
+        env:
+          SIGNING_KEY_STORE_PATH: ${{ secrets.ANDROID_KEYSTORE }}
+          SIGNING_KEY_ALIAS: ${{ secrets.SIGNING_KEY_ALIAS }}
+          SIGNING_KEY_PASSWORD: ${{ secrets.KEY_ALIAS }}
+          SIGNING_STORE_PASSWORD: ${{ secrets.KEY_PASSWORD }}
+        run: ./gradlew assembleRelease testRelease
+
+      - name: Check APK exists
+        run: test -f app/build/outputs/apk/release/app-release.apk
+
